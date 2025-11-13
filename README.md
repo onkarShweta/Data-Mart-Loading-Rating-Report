@@ -98,5 +98,4 @@ Vendor, Year, Rating Type, Security ID
 📊 Clear visibility of rating stability across vendors
 
 🖼 6. Screenshots / Demo
-
-Replace these links after uploading images to GitHub → “Copy Image Address”
+https://github.com/onkarShweta/Data-Mart-Loading-Rating-Report/blob/main/Data%20Mart%20Loading%20%26%20Rating%20Report_snapshot.png
