@@ -1,0 +1,68 @@
+#### Dax Query ####
+
+///Total Ratings///
+
+
+Total Ratings = COUNTROWS('DataMart')
+------------
+Changed Ratings = 
+CALCULATE(
+    COUNTROWS('DataMart'),
+    'DataMart'[Change Status] = "Changed"
+)
+
+
+---------------------------Rating Upgrade Count---------------
+Upgrades = 
+CALCULATE(
+    COUNTROWS('DataMart'),
+    'DataMart'[Change Status] = "Upgrade"
+)
+
+-------------------Rating Downgrade Count---------------
+Downgrades =
+CALCULATE(
+    COUNTROWS('DataMart'),
+    'DataMart'[Change Status] = "Downgrade"
+)
+
+--------------------% Rating Change (Upgrade + Downgrade)------------
+Change % = 
+DIVIDE(
+    [Changed Ratings],
+    [Total Ratings],
+    0
+)
+-------------------Latest Rating per Security (Current Rating)-------------
+Latest Rating =
+VAR MaxDate =
+    CALCULATE(
+        MAX('DataMart'[Rating Date]),
+        ALLEXCEPT('DataMart', 'DataMart'[Security ID])
+    )
+RETURN
+    CALCULATE(
+        SELECTEDVALUE('DataMart'[Rating Code]),
+        'DataMart'[Rating Date] = MaxDate
+    )
+
+---------------------------Previous Rating (SCD Type-2 helper)-------------
+Previous Rating =
+VAR CurrentDate = 'DataMart'[Rating Date]
+VAR Security = 'DataMart'[Security ID]
+RETURN
+CALCULATE(
+    MAX('DataMart'[Rating Code]),
+    'DataMart'[Security ID] = Security,
+    'DataMart'[Rating Date] < CurrentDate
+)
+----------------------Rating Trend--------------
+Ratings by Year =
+CALCULATE(
+    COUNTROWS('DataMart'),
+    ALLEXCEPT('DataMart', 'DataMart'[Year])
+)
+------------------Number of unique vendors (Moody's, S&P, Fitch)
+Total Vendors = DISTINCTCOUNT('DataMart'[Vendor ID])
+-------------------Total securities rated.
+Total Securities = DISTINCTCOUNT('DataMart'[Security ID])
